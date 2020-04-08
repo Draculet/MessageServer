@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <title>index</title>
+   <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+   <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
+   <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <style>
+        .background
+        {
+            background:white;
+        }
+        .row.row-search {
+            padding: 30px 0 50px 0;
+            background: #fff;
+        }
+        .form-control{
+            height: 35px;
+        }
+        .btn-search:hover {
+            color: #fff;
+            background-color: #f66060;
+        }
+    </style>
+</head>
+<body class="background">
+
+        <div class="container" >
+            <div class="alert" style="background: white">
+                <div class="row">
+                    <div class="col-md-7" >
+                        <!-- Nav tabs -->
+                        <p>&nbsp;</p>
+                        <p>&nbsp;</p>
+
+                        <!-- Tab panes -->
+                        
+                            <div role="tabpanel" class="tab-pane" id="messages">
+                                <!-- Button trigger modal -->
+                                <p>&nbsp;</p>
+                                <p>&nbsp;</p>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick="Connect()">
+                                    进入聊天
+                                </button>
+                                
+                               <!-- <button id="connect" onclick="Connect()">连接</button> -->
+
+                                <input type="hidden" id="mess_itemid" value="8832">
+                                <input type="hidden" id="mess_time" value="2019-12-13 10:00">
+                                <input type="hidden" id="mess_content" value="hello">
+                                
+                        
+
+
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">聊天室</h4>
+                                        请输入名字<input type="text" id="mess_username" class="form-control" value="" placeholder="输入名字...">
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="communication">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <div class="input-group">
+                                                                  <input type="text" id="message" class="form-control" placeholder="输入聊天内容...">
+                                                                  <span class="input-group-btn">
+                                                                    
+                                                                    <button class="btn btn-default" type="button" onclick="Send()">发表</button>
+                                                                  </span>
+                                                                </div><!-- /input-group -->
+                                                              </div><!-- /.col-lg-6 -->
+                                                            </div><!-- /.row -->
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+            <script>
+                var add0 = function(m)
+                {
+                    return m < 10 ? '0' + m: m
+                }
+
+                function getTime()
+                {
+                    var timestamp = Date.parse(new Date());
+                    var time = new Date(timestamp);
+                    var year = time.getFullYear();
+                    var month = time.getMonth() + 1;
+                    var day = time.getDate();
+                    var hour = time.getHours();
+                    var minute = time.getMinutes();
+                    var second = time.getSeconds();
+                    return  year+'-'+this.add0(month)+'-'+ this.add0(day)+' '+this.add0(hour)+':'+this.add0(minute)+':'+this.add0(second)  
+                }
+                
+                /*document.ondblclick = function()
+                {
+                    var mess_id = "1";
+                    var mess_itemid = document.getElementById("mess_itemid").value;
+                    var mess_time = getTime();
+                    var mess_content = document.getElementById("mess_content").value;
+                    var mess_username = document.getElementById("mess_username").value;
+                    var zero = 0;
+                    zero = String.fromCharCode(zero);
+                    var res = mess_id + zero + mess_itemid + zero + mess_time + zero + mess_content + zero + mess_username;
+                    var ressplit = res.split(zero);
+                    alert(ressplit);
+                }*/
+
+                /*document.ondblclick = function()
+                {
+                    var str = '<p><ins>From User@hello: 2019.12.12 19:00</ins></p>';
+                    var str2 = '<p class="lead">hello</p>';
+                    document.getElementById("communication").innerHTML += str;
+                    document.getElementById("communication").innerHTML += str2;
+                }*/
+                var socket = null;
+                
+                function Connect()
+                {  
+                    if (socket == null)
+                    {
+                        try{
+                            socket=new WebSocket('ws://127.0.0.1:8832/8832');  
+                        }catch(e){  
+                            alert('error');
+                            return;
+                        }
+                        socket.onopen = sOpen;
+                        socket.onerror = sError;
+                        socket.onmessage= sMessage;
+                        socket.onclose= sClose;
+                    }
+                }
+
+                function sOpen()
+                {
+                    alert('connect success!');
+                }
+                function sError(e)
+                {
+                    alert("error " + e);
+                }
+
+
+                function sMessage(msg)
+                {  
+                    //alert('server says:' + msg.data);
+                    /*var mess_id = "1";
+                    var mess_itemid = document.getElementById("mess_itemid").value;
+                    var mess_time = getTime();
+                    var mess_content = document.getElementById("mess_content").value;
+                    var mess_username = document.getElementById("mess_username").value;
+                    var zero = 0;
+                    zero = String.fromCharCode(zero);
+                    var res = mess_id + zero + mess_itemid + zero + mess_time + zero + mess_content + zero + mess_username;
+                    */
+                    var msg = msg.data;
+                    var zero = 0;
+                    zero = String.fromCharCode(zero);
+                    var msgs = msg.split(zero);
+                    var mess_id = msgs[0];
+                    var mess_itemid = msgs[1];
+                    var mess_time = msgs[2];
+                    var mess_content = msgs[3];
+                    var mess_username = msgs[4];
+
+                    var mess1 = '<p><ins>From User@' + mess_username + ': ' + mess_time + '</ins></p>';
+                    var mess2 = '<p class="lead">' + mess_content + '</p>';
+                    document.getElementById("communication").innerHTML += mess1;
+                    document.getElementById("communication").innerHTML += mess2;
+                    
+                }
+
+
+
+                function sClose(e){
+                    alert("connect closed:" + e.code);
+                }  
+                function Send()
+                {
+                    var mess_content = document.getElementById("message").value;
+                    var mess_id = "1";
+                    var mess_time = getTime();
+                    var mess_itemid = document.getElementById("mess_itemid").value;
+                    var mess_username = document.getElementById("mess_username").value;
+                    var zero = 0;
+                    zero = String.fromCharCode(zero);
+                    var res = mess_id + zero + mess_itemid + zero + mess_time + zero + mess_content + zero + mess_username;
+                    
+                    //alert(res.split(zero));
+                    socket.send(res);
+                    document.getElementById("message").value = "";
+                }
+
+                function Close(){
+                    socket.close();
+                }
+
+
+                function checkChoice()
+                {
+                    var radios = document.getElementsByName("color");
+                    var i;
+                    for (i = 0; i < radios.length; i++)
+                    {
+                        if (radios[i].checked)
+                        {
+                            break;
+                        }
+                    }
+                    if (i == radios.length)
+                    {
+                        document.getElementById("errflag").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\">请选择颜色</span>";
+                        return false;
+                    }
+                    var radios = document.getElementsByName("version");
+                    for (i = 0; i < radios.length; i++)
+                    {
+                        if (radios[i].checked)
+                        {
+                            break;
+                        }
+                    }
+                    if (i == radios.length)
+                    {
+                        document.getElementById("errflag").innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\">请选择版本</span>";
+                        return false;
+                    }
+                }
+            </script>
+
+
+<div style="float:left;">
+    <p>&nbsp</p>
+    <p>&nbsp</p>
+    <p>&nbsp</p>
+    <p>&nbsp</p>
+</div>
+<div style=float:left>
+    <hr />
+    <div class="alert" style="background:">
+        <div class="row">
+            
+        </div>
+    </div>
+    <hr />
+    <p class="container"></p>
+</div>
+
+
+
+</body>
+</html>

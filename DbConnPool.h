@@ -5,10 +5,11 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
-#include "../Mutex.h"
+#include "FastNet/include/Mutex.h"
 
 using namespace std;
 using namespace net;
+using namespace base;
 
 struct Conn
 {

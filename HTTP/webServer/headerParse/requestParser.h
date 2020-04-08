@@ -1,7 +1,7 @@
 #ifndef __REQUESE_PARSER_H__
 #define __REQUESE_PARSER_H__
 
-#include "../FastNet/include/Buffer.h"
+#include "../../../FastNet/include/Buffer.h"
 #include <iostream>
 #include <vector>
 #include <unistd.h>
@@ -18,9 +18,8 @@ namespace http
         resp(char *resptr, size_t len):
             resptr_(resptr),
             len_(len)
-        {
-            
-        }
+        {}
+        
         char *resptr_;
         size_t len_;
     };
@@ -30,9 +29,6 @@ namespace http
         public:
             requestHeader(std::string method, std::string path, std::string version, std::string body, std::map<std::string, std::string>reqkv);
             resp toResp(std::string basepath);
-            std::string toString();
-            std::map<std::string, std::string> *getKV(){return &reqkv_;}
-            std::string getPath(){return path_;}
         private:
             std::string method_;
             std::string path_;
@@ -54,12 +50,10 @@ namespace http
         requestParser(net::Buffer *buf):
             buf_(buf),
             kfin(true)
-        {
+        {}
 
-        }
         size_t size(){return reqs.size();}
         std::vector<requestHeader> reqs;
-        size_t parse();
         bool parseBuffer();
         void parseHead(std::string);
         private:
